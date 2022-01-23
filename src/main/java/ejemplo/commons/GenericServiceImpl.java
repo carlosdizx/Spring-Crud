@@ -1,5 +1,7 @@
 package ejemplo.commons;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,5 +40,11 @@ public abstract class GenericServiceImpl<T, ID extends Serializable> implements 
         return list;
     }
 
+    @Override
+    public Page<T> getAll(Pageable pageable) {
+        return getDao().findAll(pageable);
+    }
+
     public abstract JpaRepository<T, ID> getDao();
+
 }

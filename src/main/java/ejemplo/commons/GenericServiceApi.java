@@ -1,5 +1,8 @@
 package ejemplo.commons;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -11,4 +14,6 @@ public interface GenericServiceApi<T, ID extends Serializable> {
     T findByID(ID id);
 
     List<T> getAll();
+
+    Page<T> getAll(Pageable pageable);
 }
