@@ -145,22 +145,18 @@ public class PersonaRest {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<HashMap<String, Object>> delete(@PathVariable Integer id)
-    {
+    public ResponseEntity<HashMap<String, Object>> delete(@PathVariable Integer id) {
         RESPONSE.clear();
-        try
-        {
+        try {
             Persona persona = service.findByID(id);
-            if (persona == null){
+            if (persona == null) {
                 return new ResponseEntity(RESPONSE, HttpStatus.NO_CONTENT);
-            }else{
+            } else {
                 service.delete(id);
                 RESPONSE.put("mensaje", "Se elimino!");
                 return new ResponseEntity(RESPONSE, HttpStatus.ACCEPTED);
             }
-        }
-        catch (DataAccessException e)
-        {
+        } catch (DataAccessException e) {
             RESPONSE.put("mensaje", "Error al realizar la eliminación en la base de datos");
             RESPONSE.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
             return new ResponseEntity(RESPONSE, HttpStatus.INTERNAL_SERVER_ERROR);

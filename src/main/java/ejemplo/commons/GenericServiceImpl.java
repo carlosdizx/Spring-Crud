@@ -41,6 +41,7 @@ public abstract class GenericServiceImpl<T, ID extends Serializable> implements 
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<T> getAll(Pageable pageable) {
         return getDao().findAll(pageable);
     }

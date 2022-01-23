@@ -9,14 +9,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 
 @Service
-public class PersonaServiceImpl extends GenericServiceImpl<Persona, Integer> implements PersonaService
-{
+public class PersonaServiceImpl extends GenericServiceImpl<Persona, Integer> implements PersonaService {
     @Autowired
     private PersonaDao dao;
 
     @Override
-    public JpaRepository<Persona, Integer> getDao()
-    {
+    public JpaRepository<Persona, Integer> getDao() {
         return dao;
     }
 }
