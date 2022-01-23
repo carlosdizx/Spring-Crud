@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Period;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -85,7 +86,7 @@ public class PersonaRest {
     }
 
     @PostMapping("/")
-    public ResponseEntity<?> create(@Valid @RequestBody Persona persona, BindingResult result) {
+    public ResponseEntity<HashMap<String, Object>> create(@Valid @RequestBody Persona persona, BindingResult result) {
         RESPONSE.clear();
         if (result.hasErrors()) {
 
@@ -112,7 +113,7 @@ public class PersonaRest {
     }
 
     @PutMapping("edit/{id}")
-    public ResponseEntity<?> edit(@Valid @RequestBody Persona persona, @PathVariable Integer id, BindingResult result) {
+    public ResponseEntity<HashMap<String, Object>> edit(@Valid @RequestBody Persona persona, @PathVariable Integer id, BindingResult result) {
         RESPONSE.clear();
         if (result.hasErrors()) {
 
@@ -137,7 +138,30 @@ public class PersonaRest {
                 return new ResponseEntity(RESPONSE, HttpStatus.NOT_MODIFIED);
             }
         } catch (DataAccessException e) {
-            RESPONSE.put("mensaje", "Error al realizar el insert en la base de datos");
+            RESPONSE.put("mensaje", "Error al realizar la actualización en la base de datos");
+            RESPONSE.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
+            return new ResponseEntity(RESPONSE, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<HashMap<String, Object>> delete(@PathVariable Integer id)
+    {
+        RESPONSE.clear();
+        try
+        {
+            Persona persona = service.findByID(id);
+            if (persona == null){
+                return new ResponseEntity(RESPONSE, HttpStatus.NO_CONTENT);
+            }else{
+                service.delete(id);
+                RESPONSE.put("mensaje", "Se elimino!");
+                return new ResponseEntity(RESPONSE, HttpStatus.ACCEPTED);
+            }
+        }
+        catch (DataAccessException e)
+        {
+            RESPONSE.put("mensaje", "Error al realizar la eliminación en la base de datos");
             RESPONSE.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
             return new ResponseEntity(RESPONSE, HttpStatus.INTERNAL_SERVER_ERROR);
         }
