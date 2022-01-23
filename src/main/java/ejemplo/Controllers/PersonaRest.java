@@ -4,8 +4,10 @@ import ejemplo.servicios.api.PersonaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
@@ -22,7 +24,7 @@ import ejemplo.modelos.Persona;
 @RequestMapping("/personas/")
 public class PersonaRest {
 
-    private final static int CANTIDAD_POR_PAGINA = 10;
+    private final static int CANTIDAD_POR_PAGINA = 3;
 
     private final static String NOMBRE_ENTIDAD = "Persona";
 
@@ -37,7 +39,7 @@ public class PersonaRest {
     public ResponseEntity<HashMap<String, Object>> findAll() {
         RESPONSE.clear();
         try {
-            List<Persona> listado = service.getAll();
+            final List<Persona> listado = service.getAll();
             RESPONSE.put(NOMBRE_EN_PLURAL, listado);
             return new ResponseEntity(RESPONSE, HttpStatus.OK);
         }
@@ -53,8 +55,9 @@ public class PersonaRest {
     {
         RESPONSE.clear();
         try {
-            Pageable pageable = PageRequest.of(page, CANTIDAD_POR_PAGINA);
-            RESPONSE.put(NOMBRE_EN_PLURAL, service.getAll(pageable));
+            final Pageable pageable = PageRequest.of(page, CANTIDAD_POR_PAGINA);
+            Page paginate = service.getAll(pageable);
+            RESPONSE.put(NOMBRE_EN_PLURAL, paginate);
             return new ResponseEntity(RESPONSE, HttpStatus.OK);
         }
         catch (DataAccessException e) {
